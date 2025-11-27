@@ -10,7 +10,7 @@ export const Hello: React.FC = () => {
         Hello World
       </h1>
       <p className="text-slate-500 text-lg font-medium">
-        Vercel Deployment Fixed
+        喵库长的第一个网站
       </p>
       <div className="mt-8 pt-6 border-t border-slate-100">
         <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold">
