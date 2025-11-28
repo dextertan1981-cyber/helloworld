@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // --- Icons ---
 const GlobeIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path></svg>
 );
 const CopyIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -13,50 +13,141 @@ const DownloadIcon = () => (
 const PasteIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
 );
-const UploadIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+const ClearIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"></path></svg>
 );
+const ChevronDownIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+);
+
+// --- Translation Data ---
+type LangKey = 'zh' | 'en' | 'fr' | 'de' | 'ja';
+
+const translations: Record<LangKey, any> = {
+  zh: {
+    name: '中文',
+    title: '无水印解析下载130多个平台视频',
+    subtitle: '免费不限次数，无需登录。支持 TikTok, 抖音, 快手, 小红书等平台解析去水印。',
+    placeholder: '在此粘贴视频链接...',
+    start: '开始解析',
+    clear: '清除内容',
+    paste: '粘贴链接',
+    downloadVideo: '下载无水印视频',
+    downloading: '下载中...',
+    copyLink: '复制无水印链接',
+    copySuccess: '复制成功！',
+    promoText: '本网站工具由喵库星球提供，接受捐赠。',
+    visitAccount: '访问公众号',
+    copyWeChat: '复制微信号',
+    parseError: '解析失败，请检查链接或稍后重试',
+  },
+  en: {
+    name: 'English',
+    title: 'No Watermark Video Downloader',
+    subtitle: 'Free, unlimited, no login. Supports TikTok, Instagram, and 130+ platforms.',
+    placeholder: 'Paste video link here...',
+    start: 'Start Parsing',
+    clear: 'Clear',
+    paste: 'Paste Link',
+    downloadVideo: 'Download Video',
+    downloading: 'Downloading...',
+    copyLink: 'Copy Link',
+    copySuccess: 'Copied successfully!',
+    promoText: 'Tool provided by MeowCool Planet.',
+    visitAccount: 'Visit Official Account',
+    copyWeChat: 'Copy ID',
+    parseError: 'Parsing failed, check URL or try again later',
+  },
+  fr: {
+    name: 'Français',
+    title: 'Téléchargeur vidéo sans filigrane',
+    subtitle: 'Gratuit, illimité. Prend en charge TikTok, Instagram et plus de 130 plateformes.',
+    placeholder: 'Collez le lien ici...',
+    start: 'Démarrer',
+    clear: 'Effacer',
+    paste: 'Coller',
+    downloadVideo: 'Télécharger la vidéo',
+    downloading: 'Téléchargement...',
+    copyLink: 'Copier le lien',
+    copySuccess: 'Copié avec succès!',
+    promoText: 'Outil fourni par MeowCool Planet.',
+    visitAccount: 'Compte officiel',
+    copyWeChat: 'Copier ID',
+    parseError: 'Échec de l\'analyse',
+  },
+  de: {
+    name: 'Deutsch',
+    title: 'Video-Downloader ohne Wasserzeichen',
+    subtitle: 'Kostenlos, unbegrenzt. Unterstützt TikTok, Instagram und 130+ Plattformen.',
+    placeholder: 'Link hier einfügen...',
+    start: 'Starten',
+    clear: 'Löschen',
+    paste: 'Einfügen',
+    downloadVideo: 'Video herunterladen',
+    downloading: 'Wird heruntergeladen...',
+    copyLink: 'Link kopieren',
+    copySuccess: 'Erfolgreich kopiert!',
+    promoText: 'Bereitgestellt von MeowCool Planet.',
+    visitAccount: 'Offiziellen Account besuchen',
+    copyWeChat: 'ID kopieren',
+    parseError: 'Parsing fehlgeschlagen',
+  },
+  ja: {
+    name: '日本語',
+    title: '透かしなし動画ダウンローダー',
+    subtitle: '無料、無制限。TikTok、Instagramなど130以上のプラットフォームに対応。',
+    placeholder: 'リンクをここに貼り付け...',
+    start: '解析開始',
+    clear: 'クリア',
+    paste: '貼り付け',
+    downloadVideo: '動画を保存',
+    downloading: 'ダウンロード中...',
+    copyLink: 'リンクをコピー',
+    copySuccess: 'コピーしました！',
+    promoText: 'MeowCool Planet提供ツール。',
+    visitAccount: '公式アカウント',
+    copyWeChat: 'IDをコピー',
+    parseError: '解析に失敗しました',
+  }
+};
 
 const App: React.FC = () => {
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
-  const [lang, setLang] = useState<'zh' | 'en'>('zh');
+  const [videoTitle, setVideoTitle] = useState<string>('');
+  const [lang, setLang] = useState<LangKey>('zh');
+  const [showLangMenu, setShowLangMenu] = useState(false);
   const [showWeChatModal, setShowWeChatModal] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
-  // 使用一个永久有效的测试视频 (Big Buck Bunny)
+  // 点击外部关闭语言菜单
+  const langMenuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) {
+        setShowLangMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const t = translations[lang];
   const defaultTestUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 
-  const t = {
-    title: lang === 'zh' ? '无水印解析下载130多个平台视频，图片，实况Live图' : 'No Watermark Downloader for 130+ Platforms',
-    subtitle: lang === 'zh' ? '免费不限次数，无需登录。支持130多个平台解析去水印。' : 'Free, unlimited, no login required. Supports 130+ platforms.',
-    placeholder: lang === 'zh' ? '在此粘贴链接...' : 'Paste link here...',
-    start: lang === 'zh' ? '开始解析' : 'Start Parsing',
-    clear: lang === 'zh' ? '清除内容' : 'Clear',
-    paste: lang === 'zh' ? '粘贴链接' : 'Paste',
-    cheers: 'Cheers 🍻',
-    downloadVideo: lang === 'zh' ? '下载无水印视频' : 'Download Video',
-    copyLink: lang === 'zh' ? '复制无水印链接' : 'Copy Link',
-    promoText: lang === 'zh' ? '本网站工具由喵库星球提供，接受捐赠。' : 'Tool provided by MeowCool Planet, donations accepted.',
-    visitAccount: lang === 'zh' ? '访问公众号' : 'Visit Official Account',
-    weChatId: 'mao3924984248',
-    copyWeChat: lang === 'zh' ? '复制微信号' : 'Copy WeChat ID',
-    testLocal: lang === 'zh' ? '测试本地文件' : 'Test Local File',
-    localError: lang === 'zh' ? '浏览器安全限制：不能直接粘贴 D:\\ 路径。请点击下方的“测试本地文件”按钮选择文件。' : 'Browser Security: Cannot paste D:\\ paths. Please use the "Test Local File" button below.',
-    parseError: lang === 'zh' ? '解析失败，请检查链接或稍后重试' : 'Parsing failed, check URL or try again later',
-  };
-
-  // 真实的 TikTok 解析逻辑
+  // API 解析逻辑
   const fetchTikTokVideo = async (inputUrl: string) => {
     try {
-      // 使用 tikwm.com 的公共 API (这是一个常用的免费解析接口)
       const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(inputUrl)}`;
       const response = await fetch(apiUrl);
       const data = await response.json();
 
       if (data && data.data && data.data.play) {
-        return data.data.play; // 返回无水印视频地址
+        return {
+            url: data.data.play,
+            title: data.data.title || 'Video'
+        };
       } else {
         throw new Error("API No Data");
       }
@@ -67,39 +158,33 @@ const App: React.FC = () => {
   };
 
   const handleStart = async () => {
-    // 1. 检查是否是本地路径
-    if (url.match(/^[a-zA-Z]:\\/)) {
-        alert(t.localError);
-        return;
-    }
-
     if (!url) return;
 
     setIsLoading(true);
     setResult(null);
+    setVideoTitle('');
 
-    // 2. 判断链接类型
     if (url.includes('tiktok.com')) {
-      // 如果是 TikTok 链接，尝试调用 API 解析
-      const videoUrl = await fetchTikTokVideo(url);
+      const videoData = await fetchTikTokVideo(url);
       setIsLoading(false);
-      if (videoUrl) {
-        setResult(videoUrl);
+      if (videoData) {
+        setResult(videoData.url);
+        setVideoTitle(videoData.title);
       } else {
         alert(t.parseError);
-        // 解析失败时不显示结果
       }
     } else if (url.startsWith('http://') || url.startsWith('https://')) {
-      // 3. 如果是普通直链 (如 Akamai 链接)，直接模拟延时后播放
       setTimeout(() => {
         setIsLoading(false);
         setResult(url);
-      }, 1000);
+        const fileName = url.split('/').pop()?.split('?')[0] || 'Video Result';
+        setVideoTitle(fileName);
+      }, 800);
     } else {
-      // 4. 其他情况 (如空的或乱填的)，显示默认测试视频
       setTimeout(() => {
         setIsLoading(false);
         setResult(defaultTestUrl);
+        setVideoTitle('Test Video');
       }, 500);
     }
   };
@@ -107,6 +192,7 @@ const App: React.FC = () => {
   const handleClear = () => {
     setUrl('');
     setResult(null);
+    setVideoTitle('');
   };
 
   const handlePaste = async () => {
@@ -114,41 +200,42 @@ const App: React.FC = () => {
       const text = await navigator.clipboard.readText();
       setUrl(text);
     } catch (err) {
-      alert('无法访问剪贴板，请手动粘贴 / Cannot access clipboard');
+      alert('Cannot access clipboard. Please paste manually.');
     }
   };
 
   const handleCopyLink = () => {
     if (result) {
       navigator.clipboard.writeText(result);
-      alert(lang === 'zh' ? '链接已复制' : 'Link Copied');
+      alert(t.copySuccess);
     }
   };
 
-  const handleDownload = () => {
-    if (result) {
-      window.open(result, '_blank');
+  const handleDownload = async () => {
+    if (!result) return;
+    setIsDownloading(true);
+    try {
+        const response = await fetch(result);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = `video_${Date.now()}.mp4`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(blobUrl);
+    } catch (e) {
+        window.open(result, '_blank');
+    } finally {
+        setIsDownloading(false);
     }
-  };
-
-  const toggleLang = () => {
-    setLang(lang === 'zh' ? 'en' : 'zh');
   };
 
   const handleCopyWeChat = () => {
-    navigator.clipboard.writeText(t.weChatId);
-    alert(lang === 'zh' ? '微信号已复制！' : 'WeChat ID Copied!');
+    navigator.clipboard.writeText('mao3924984248');
+    alert(t.copySuccess);
     setShowWeChatModal(false);
-  };
-
-  // 处理本地文件选择
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const objectUrl = URL.createObjectURL(file);
-      setResult(objectUrl);
-      setUrl(`[本地文件] ${file.name}`);
-    }
   };
 
   // Styles
@@ -169,28 +256,65 @@ const App: React.FC = () => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      borderBottom: '1px solid #eee',
+      borderBottom: '1px solid #f3f4f6',
+      backgroundColor: 'white',
+      position: 'relative',
+      zIndex: 10,
     },
     logo: {
-      color: '#ef4444',
-      fontWeight: 'bold',
-      fontSize: '1.5rem',
+      color: '#111827', // 醒目的深色
+      fontWeight: '900', // 粗体
+      fontSize: '1.8rem', // 加大字体
       textDecoration: 'none',
+      letterSpacing: '-0.5px',
+    },
+    // 语言菜单相关样式
+    langContainer: {
+        position: 'relative',
     },
     langBtn: {
       display: 'flex',
       alignItems: 'center',
       gap: '0.5rem',
       padding: '0.5rem 1rem',
-      border: '1px solid #ddd',
-      borderRadius: '6px',
+      border: '1px solid #e5e7eb',
+      borderRadius: '8px',
       background: 'white',
       cursor: 'pointer',
-      fontSize: '0.9rem',
+      fontSize: '0.95rem',
+      color: '#374151',
+      fontWeight: '500',
     },
+    langDropdown: {
+        position: 'absolute',
+        top: '120%',
+        right: 0,
+        backgroundColor: 'white',
+        border: '1px solid #e5e7eb',
+        borderRadius: '8px',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+        padding: '0.5rem',
+        zIndex: 50,
+        minWidth: '150px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '2px',
+    },
+    langOption: {
+        padding: '0.5rem 1rem',
+        cursor: 'pointer',
+        textAlign: 'left',
+        borderRadius: '6px',
+        fontSize: '0.9rem',
+        color: '#4b5563',
+        background: 'transparent',
+        border: 'none',
+        width: '100%',
+    },
+    
     main: {
       width: '100%',
-      maxWidth: '800px',
+      maxWidth: '900px',
       padding: '4rem 1rem',
       display: 'flex',
       flexDirection: 'column',
@@ -199,96 +323,137 @@ const App: React.FC = () => {
     },
     title: {
       fontSize: '2rem',
-      fontWeight: 'bold',
+      fontWeight: '800',
       marginBottom: '1rem',
-      color: '#1f2937',
+      color: '#111827',
+      lineHeight: 1.2,
     },
     subtitle: {
       fontSize: '1rem',
       color: '#6b7280',
-      marginBottom: '2rem',
-      maxWidth: '600px',
+      marginBottom: '2.5rem',
+      maxWidth: '640px',
       lineHeight: '1.6',
     },
-    inputGroup: {
-      width: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1rem',
+    
+    // 搜索布局
+    searchBoxContainer: {
+        width: '100%',
+        maxWidth: '750px',
+        display: 'flex',
+        flexDirection: 'row',
+        gap: '10px',
+        marginBottom: '1.5rem',
+        alignItems: 'stretch',
     },
     input: {
-      width: '100%',
-      padding: '1rem',
-      borderRadius: '8px',
-      border: '1px solid #d1d5db',
+      flex: '1 1 auto', // 自动伸缩
+      width: '0', // 关键：允许 flex item 缩小到比内容小，从而触发 ellipsis
+      padding: '1rem 1.25rem',
+      borderRadius: '12px',
+      border: '2px solid #e5e7eb',
       fontSize: '1rem',
       outline: 'none',
-      boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+      transition: 'border-color 0.2s',
+      textOverflow: 'ellipsis', // 长文本显示省略号
     },
-    btnGroup: {
-      display: 'flex',
-      gap: '1rem',
-      flexWrap: 'wrap',
-      justifyContent: 'center',
-    },
+    
+    // 按钮基础样式
     btn: {
-      padding: '0.75rem 1.5rem',
-      borderRadius: '6px',
+      padding: '0.875rem 1.5rem',
+      borderRadius: '10px',
       border: 'none',
       cursor: 'pointer',
       fontSize: '1rem',
-      fontWeight: '500',
+      fontWeight: '600',
       display: 'flex',
       alignItems: 'center',
+      justifyContent: 'center',
       gap: '0.5rem',
-      transition: 'opacity 0.2s',
+      transition: 'transform 0.1s, opacity 0.2s',
       color: 'white',
+      whiteSpace: 'nowrap',
     },
-    btnBlue: { backgroundColor: '#3b82f6' },
-    btnRed: { backgroundColor: '#ef4444' },
-    btnGray: { backgroundColor: '#f3f4f6', color: '#374151' },
-    btnOrange: { backgroundColor: '#f97316' },
-    btnGreen: { backgroundColor: '#22c55e', width: '100%', justifyContent: 'center', marginTop: '1rem' },
+    // 开始按钮：红色，醒目，偏大
+    startBtn: {
+        flex: '0 0 auto', // 不允许缩小
+        minWidth: '160px', // 保证足够宽度
+        backgroundColor: '#ef4444', // 红色
+        fontSize: '1.1rem',
+        boxShadow: '0 4px 12px rgba(239, 68, 68, 0.25)',
+    },
     
-    // Result Card
+    // 工具栏
+    toolsContainer: {
+        display: 'flex',
+        gap: '1rem',
+        marginBottom: '2rem',
+        justifyContent: 'center',
+    },
+    // 清除：绿色
+    btnClear: {
+        backgroundColor: '#22c55e', // 绿色
+    },
+    // 粘贴：浅蓝色
+    btnPaste: {
+        backgroundColor: '#60a5fa', // 浅蓝色
+    },
+    // 复制链接：浅蓝色
+    btnBlue: {
+        backgroundColor: '#60a5fa', // 浅蓝色
+    },
+    // 下载：绿色
+    btnDownload: {
+        backgroundColor: '#22c55e', // 绿色
+    },
+
+    // 结果卡片
     card: {
-      marginTop: '3rem',
+      marginTop: '1rem',
       padding: '2rem',
-      borderRadius: '12px',
-      border: '1px solid #e5e7eb',
+      borderRadius: '16px',
+      border: '1px solid #f3f4f6',
       backgroundColor: 'white',
-      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
       width: '100%',
-      maxWidth: '500px',
+      maxWidth: '380px',
     },
     cardHeader: {
-      fontSize: '1.25rem',
+      fontSize: '1.1rem',
       fontWeight: '600',
       marginBottom: '1rem',
-      textAlign: 'left',
+      textAlign: 'center',
+      color: '#374151',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
     },
     videoWrapper: {
-      width: '100%',
-      borderRadius: '8px',
+      width: '260px',
+      height: '375px',
+      borderRadius: '12px',
       overflow: 'hidden',
       backgroundColor: '#000',
-      marginBottom: '1rem',
+      marginBottom: '1.5rem',
+      margin: '0 auto 1.5rem auto',
     },
     video: {
       width: '100%',
-      display: 'block',
+      height: '100%',
+      objectFit: 'contain',
     },
     
-    // Footer
     footer: {
       marginTop: 'auto',
       padding: '2rem',
       textAlign: 'center',
-      color: '#6b7280',
+      color: '#9ca3af',
     },
     promoTag: {
       display: 'inline-flex',
       alignItems: 'center',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
       gap: '0.5rem',
       fontSize: '0.9rem',
       marginBottom: '1rem',
@@ -296,21 +461,22 @@ const App: React.FC = () => {
     promoBtn: {
       backgroundColor: '#f59e0b',
       color: 'white',
-      padding: '0.25rem 0.75rem',
-      borderRadius: '4px',
-      fontSize: '0.8rem',
+      padding: '0.4rem 1rem',
+      borderRadius: '20px',
+      fontSize: '0.85rem',
+      fontWeight: 'bold',
       border: 'none',
       cursor: 'pointer',
     },
 
-    // Modal
     modalOverlay: {
       position: 'fixed',
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)',
+      backgroundColor: 'rgba(0,0,0,0.6)',
+      backdropFilter: 'blur(4px)',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
@@ -318,16 +484,18 @@ const App: React.FC = () => {
     },
     modal: {
       backgroundColor: 'white',
-      padding: '2rem',
-      borderRadius: '12px',
+      padding: '2.5rem',
+      borderRadius: '20px',
       textAlign: 'center',
-      minWidth: '300px',
+      minWidth: '320px',
+      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
     },
     weChatId: {
-      fontSize: '1.5rem',
-      fontWeight: 'bold',
-      margin: '1rem 0',
-      color: '#374151',
+      fontSize: '1.75rem',
+      fontWeight: '800',
+      margin: '1.5rem 0',
+      color: '#111827',
+      letterSpacing: '1px',
     },
   };
 
@@ -335,12 +503,41 @@ const App: React.FC = () => {
     <div style={styles.container}>
       {/* Navbar */}
       <nav style={styles.navbar}>
-        <a href="https://hello-world-leotan.vercel.app" style={styles.logo}>
-          hello-world-leotan.vercel.app
+        <a 
+            href="https://mp.weixin.qq.com/s/xcW_AXeSG29KY45SuL1rHg" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style={styles.logo}
+        >
+          喵库星球
         </a>
-        <button onClick={toggleLang} style={styles.langBtn}>
-          <GlobeIcon /> {lang === 'zh' ? 'Languages' : '语言'}
-        </button>
+        
+        {/* 多语言下拉菜单 */}
+        <div style={styles.langContainer} ref={langMenuRef}>
+            <button onClick={() => setShowLangMenu(!showLangMenu)} style={styles.langBtn}>
+                <GlobeIcon /> {translations[lang].name} <ChevronDownIcon />
+            </button>
+            {showLangMenu && (
+                <div style={styles.langDropdown}>
+                    {(Object.keys(translations) as LangKey[]).map((key) => (
+                        <button 
+                            key={key} 
+                            style={{
+                                ...styles.langOption,
+                                backgroundColor: lang === key ? '#f3f4f6' : 'transparent',
+                                fontWeight: lang === key ? 'bold' : 'normal'
+                            }}
+                            onClick={() => {
+                                setLang(key);
+                                setShowLangMenu(false);
+                            }}
+                        >
+                            {translations[key].name}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
       </nav>
 
       {/* Main Content */}
@@ -348,49 +545,39 @@ const App: React.FC = () => {
         <h1 style={styles.title}>{t.title}</h1>
         <p style={styles.subtitle}>{t.subtitle}</p>
 
-        <div style={styles.inputGroup}>
+        {/* 搜索行：布局优化 */}
+        <div style={styles.searchBoxContainer}>
           <input
             style={styles.input}
             placeholder={t.placeholder}
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
-          <div style={styles.btnGroup}>
-            <button 
-              onClick={handleStart} 
-              style={{...styles.btn, ...styles.btnBlue}}
-              disabled={isLoading}
-            >
-              {isLoading ? (lang === 'zh' ? '解析中...' : 'Parsing...') : t.start}
+          <button 
+            onClick={handleStart} 
+            style={{...styles.btn, ...styles.startBtn}}
+            disabled={isLoading}
+          >
+            {isLoading ? (lang === 'zh' ? '...' : '...') : t.start}
+          </button>
+        </div>
+
+        {/* 辅助按钮行：颜色调整 */}
+        <div style={styles.toolsContainer}>
+           <button onClick={handleClear} style={{...styles.btn, ...styles.btnClear}}>
+              <ClearIcon /> {t.clear}
             </button>
-            <button onClick={handleClear} style={{...styles.btn, ...styles.btnRed}}>
-              {t.clear}
-            </button>
-            <button onClick={handlePaste} style={{...styles.btn, ...styles.btnGray}}>
+            <button onClick={handlePaste} style={{...styles.btn, ...styles.btnPaste}}>
               <PasteIcon /> {t.paste}
             </button>
-            
-            {/* 隐藏的文件上传，用于测试本地文件 */}
-            <input 
-                type="file" 
-                ref={fileInputRef} 
-                style={{display: 'none'}} 
-                accept="video/*"
-                onChange={handleFileChange}
-            />
-            <button 
-                onClick={() => fileInputRef.current?.click()} 
-                style={{...styles.btn, ...styles.btnOrange}}
-            >
-                <UploadIcon /> {t.testLocal}
-            </button>
-          </div>
         </div>
 
         {/* Result Card */}
         {result && (
           <div style={styles.card}>
-            <div style={styles.cardHeader}>{t.cheers}</div>
+            <div style={styles.cardHeader} title={videoTitle}>
+                {videoTitle || 'No Title'}
+            </div>
             
             <div style={styles.videoWrapper}>
               <video 
@@ -403,13 +590,18 @@ const App: React.FC = () => {
               </video>
             </div>
 
-            <button onClick={handleDownload} style={{...styles.btn, ...styles.btnGreen}}>
-              <DownloadIcon /> {t.downloadVideo}
+            <button 
+                onClick={handleDownload} 
+                style={{...styles.btn, ...styles.btnDownload, width: '100%'}}
+                disabled={isDownloading}
+            >
+              <DownloadIcon /> {isDownloading ? t.downloading : t.downloadVideo}
             </button>
             
+            {/* 修复：确保使用了正确的样式对象 */}
             <button 
               onClick={handleCopyLink} 
-              style={{...styles.btn, ...styles.btnBlue, marginTop: '0.5rem', width: '100%', justifyContent: 'center'}}
+              style={{...styles.btn, ...styles.btnBlue, marginTop: '0.8rem', width: '100%'}}
             >
               <CopyIcon /> {t.copyLink}
             </button>
@@ -431,8 +623,8 @@ const App: React.FC = () => {
         <div style={styles.modalOverlay} onClick={() => setShowWeChatModal(false)}>
           <div style={styles.modal} onClick={e => e.stopPropagation()}>
             <h3>{t.visitAccount}</h3>
-            <div style={styles.weChatId}>{t.weChatId}</div>
-            <button onClick={handleCopyWeChat} style={{...styles.btn, ...styles.btnGreen}}>
+            <div style={styles.weChatId}>mao3924984248</div>
+            <button onClick={handleCopyWeChat} style={{...styles.btn, ...styles.btnDownload}}>
               <CopyIcon /> {t.copyWeChat}
             </button>
           </div>
