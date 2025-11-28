@@ -244,7 +244,6 @@ const App: React.FC = () => {
                      controls 
                      className="w-full h-full object-contain"
                      playsInline
-                     referrerPolicy="no-referrer"
                    >
                      Your browser does not support the video tag.
                    </video>
