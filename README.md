@@ -1,5 +1,5 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="[https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6](https://mmbiz.qpic.cn/mmbiz_png/ypaNfibVOzdMfaHhbl6bTib0vGc529heLb2aN0zrok4xcM5aeBqjdfiafiaHTHqNiaKrzzSIEVsImSRyDwrkYOvb8qw/640?wx_fmt=png&from=appmsg&quot;);)" />
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6](https://mmbiz.qpic.cn/mmbiz_png/ypaNfibVOzdMfaHhbl6bTib0vGc529heLb2aN0zrok4xcM5aeBqjdfiafiaHTHqNiaKrzzSIEVsImSRyDwrkYOvb8qw/640?wx_fmt=png&from=appmsg&quot;);)" />
 </div>
 
 有关于公众号一键发文的著作权归 喵库星球 
